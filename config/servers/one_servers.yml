@@ -1,0 +1,7 @@
+---
+- name: mha1
+  ip: 192.168.50.61
+  role: 
+    - node
+    - manager
+    - monitor
