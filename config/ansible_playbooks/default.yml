@@ -1,5 +1,0 @@
----
-- hosts: all
-  sudo: yes
-  tasks:
-    - yum: name=mysql-server state=latest
