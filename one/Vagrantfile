@@ -9,11 +9,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     if vagrant_env.nil?
         if vagrant_loc.nil?
-            ansible_playbook = "config/ansible/default_playbook.yml"
-            server_config = "config/servers/default_servers.yml"
+            ansible_playbook = "config/ansible/default.yml"
+            server_config = "config/servers/servers.yml"
         else
-            ansible_playbook = "#{vagrant_loc}/config/ansible/default_playbook.yml"
-            server_config = "#{vagrant_loc}/config/servers/default_servers.yml"
+            ansible_playbook = "#{vagrant_loc}/config/ansible/default.yml"
+            server_config = "#{vagrant_loc}/config/servers/servers.yml"
         end
     else
         if vagrant_loc.nil?

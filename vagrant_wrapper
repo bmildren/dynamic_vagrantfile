@@ -15,8 +15,8 @@ if [[ ! -s $PWD'/config/servers/'$ENVIRONMENT'_servers.yml' ]]; then
     exit 1
 fi
 
-if [[ ! -s $PWD'/config/ansible_playbooks/'$ENVIRONMENT'_playbook.yml' ]]; then
-    echo "ERROR: ${ENVIRONMENT}_servers.yml doesn't exist, please create a playbook for \"${ENVIRONMENT}\" in $PWD/config/ansible_playbooks/"
+if [[ ! -s $PWD'/config/ansible/'$ENVIRONMENT'_playbook.yml' ]]; then
+    echo "ERROR: ${ENVIRONMENT}_servers.yml doesn't exist, please create a playbook for \"${ENVIRONMENT}\" in $PWD/config/ansible/"
     exit 1
 fi
 

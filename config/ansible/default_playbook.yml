@@ -1,0 +1,107 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+      - name: install libselinux-python
+        yum: name=libselinux-python state=present
+
+      - name: set selinux to permissive
+        selinux: policy=targeted state=permissive
+
+      - name: disable iptables
+        service: name=iptables state=stopped enabled=no
+
+      - name: bootstrap epel-release install
+        copy: src=../files/ansible-bootstrap-epel.repo
+              dest=/etc/yum.repos.d/
+              owner=root group=root mode=0644
+
+      - name: epel-release install
+        yum: name=epel-release
+             enablerepo=ansible-bootstrap-epel
+             state=present
+
+      - name: epel repository enable
+        ini_file: dest=/etc/yum.repos.d/epel.repo
+                  section=epel
+                  option=enabled
+                  value=1
+
+      - name: install percona repo
+        yum: name=http://www.percona.com/downloads/percona-release/percona-release-0.0-1.x86_64.rpm state=present
+
+- hosts: nodes
+  sudo: yes
+  tasks:
+      - name: install percona server and python mysql
+        yum: name={{ item }} state=present
+        with_items:
+            - Percona-Server-server-55
+            - MySQL-python
+        notify: 
+            - remove old datadir
+            - create symlink datadir
+            - create system databases
+
+      - name: create mysql folders
+        file: path={{ item }} owner=mysql group=mysql mode=0755 state=directory
+        with_items:
+            - /mysql/data
+            - /mysql/binary_logs
+            - /mysql/logs
+            - /mysql/tmp
+
+      - name: set mysql_innodb_buffer_pool_size
+        set_fact: mysql_innodb_buffer_pool_size_mb="{{ ( ansible_memtotal_mb / 2 ) | int }}"
+
+      - name: set mysql_server_id
+        set_fact: mysql_server_id=1
+
+      - name: copy my.cnf
+        template: src=../files/my.cnf.j2 dest=/etc/my.cnf owner=mysql group=mysql mode=0644
+        notify: restart mysql
+
+      - name: start mysql
+        service: name=mysql enabled=yes
+
+  handlers:
+      - name: remove old datadir
+        file: path=/var/lib/mysql recurse=yes state=absent
+        when: 
+
+      - name: create symlink datadir
+        file: src=/mysql/data path=/var/lib/mysql state=link 
+
+      - name: create system databases
+        shell: mysql_install_db --user=mysql --datadir=/mysql/data
+
+      - name: restart mysql
+        service: name=mysql state=restarted
+
+# MySQL Basic Security
+- hosts: nodes
+  tasks:
+      - name: create user
+        mysql_user: name=percona host=localhost password=Password123 priv=*.*:ALL,GRANT
+
+      - name: copy .my.cnf
+        template: src=../files/.my.cnf.j2 dest=~/.my.cnf owner=vagrant group=vagrant mode=0600
+
+      - name: remove anonymous users
+        mysql_user: name='' host={{ item }} state=absent
+        with_items:
+            - localhost
+            - "{{ ansible_hostname }}"
+
+      - name: remove superfluous root users
+        mysql_user: name=root host={{ item }} state=absent
+        with_items:
+            - 127.0.0.1
+            - ::1
+            - "{{ ansible_hostname }}"
+
+      - name: update root password
+        mysql_user: name='root' host='localhost' password='rootpass'
+
+      - name: remove test database
+        mysql_db: name=test state=absent    

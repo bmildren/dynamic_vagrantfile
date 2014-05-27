@@ -1,0 +1,52 @@
+# {{ ansible_managed }}
+[client]
+socket                            = /mysql/data/mysql.sock
+
+[mysqld]
+read_only                         = 1
+pid-file                          = /mysql/data/mysql.pid
+socket                            = /mysql/data/mysql.sock
+skip-name-resolve                 = 1
+max_connections                   = 100
+max_user_connections              = 50
+max_connect_errors                = 1000000
+thread_cache_size                 = 64
+max_allowed_packet                = 16M
+datadir                           = /mysql/data/
+tmpdir                            = /mysql/tmp/
+character-set-server              = utf8
+collation-server                  = utf8_general_ci
+sql-mode                          = NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES
+query_cache_type                  = 0
+query_cache_size                  = 0
+tmp_table_size                    = 16M
+max_heap_table_size               = 16M
+performance_schema                = 1
+innodb_buffer_pool_size           = {{ mysql_innodb_buffer_pool_size_mb|default(128) }}M
+innodb_buffer_pool_instances      = 1
+innodb_flush_log_at_trx_commit    = 2
+innodb_flush_method               = O_DIRECT
+innodb_file_per_table             = 1
+innodb_file_format                = Barracuda
+innodb_file_format_max            = Barracuda
+innodb_log_file_size              = 1G
+innodb_stats_on_metadata          = 0
+server-id                         = {{ mysql_server_id|default(1) }}
+master-info-file                  = /mysql/binary-logs/master.info
+log-bin                           = /mysql/binary_logs/mysql-bin
+log-bin-index                     = /mysql/binary_logs/mysql-bin.index
+log-slave-updates                 = 1
+binlog-format                     = ROW
+expire_logs_days                  = 7
+skip-slave-start                  = 1
+relay-log-info-file               = /mysql/binary_logs/relay.info
+relay-log                         = /mysql/binary_logs/mysql-relay
+relay-log-index                   = /mysql/binary_logs/mysql-relay.index
+log-error                         = /mysql/logs/mysql-error.log
+general-log                       = 0
+general_log_file                  = /mysql/logs/mysql-general.log
+slow-query-log                    = 1
+slow_query_log_file               = /mysql/logs/mysql-slow.log
+long_query_time                   = 2
+log-slow-slave-statements         = 1
+log-slow-admin-statements         = 1
