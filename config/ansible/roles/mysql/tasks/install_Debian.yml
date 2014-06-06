@@ -1,0 +1,27 @@
+---
+#####   requires ansible 1.6, potentially we could capture the ansible version and use it here with when
+# - name: install percona server apt-key
+#   apt_key: keyserver={{ key_server }} id=1C4CBDCDCD2EFD2A state=present
+
+#####   for ansible versions below 1.6 (part 1)
+- name: check if percona key is added to apt
+  shell: apt-key list | grep 'CD2EFD2A'
+  register: percona_key
+  ignore_errors: yes
+  changed_when: percona_key|failed
+
+#####   for ansible versions below 1.6 (part 2) - includes tmp workaround for dns resolution problem
+- name: add percona key to apt
+  shell: apt-key adv --keyserver `host -tA {{ key_server }} | sed -n '/address/p' | awk 'NR==1 {print $4}'` --recv-keys 1C4CBDCDCD2EFD2A
+  when: 
+      - percona_key|failed
+
+- name: install percona repo on debian family hosts
+  apt_repository: repo="{{ item }}" state=present
+  with_items: percona_repo
+
+- name: install mysql related packages on debian family hosts
+  apt: name="{{ item }}" state=present
+  environment: 
+      RUNLEVEL: 1
+  with_items: mysql_pkgs

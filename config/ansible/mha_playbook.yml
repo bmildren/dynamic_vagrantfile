@@ -1,5 +1,14 @@
 ---
-- hosts: all
+- name: create os group
+  hosts: all
+  tasks: 
+      - name: group hosts
+        group_by: key=os_{{ ansible_os_family }}
+        changed_when: false
+
+- name: configure database nodes
+  hosts: db_nodes
   sudo: yes
-  tasks:
-    - yum: name=mysql-server state=latest
+  roles: 
+      - mysql
+      - mysql_mha

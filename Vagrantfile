@@ -5,7 +5,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     vagrant_loc = ENV['VAGRANT_LOC']
     vagrant_env = ENV['VAGRANT_ENV']
-    nodes, managers, monitors = Array.new(3){ [] }
+    db_masters, db_slaves, managers, monitors = Array.new(4){ [] }
 
     if vagrant_env.nil?
         if vagrant_loc.nil?
@@ -32,8 +32,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         servers.each do |new_server|
             new_server["role"].each do |role_config|
                 case role_config
-                when "node"
-                    nodes.push(new_server["name"])
+                when "db_master"
+                    db_masters.push(new_server["name"])
+                when "db_slave"
+                    db_slaves.push(new_server["name"])
                 when "manager"
                     managers.push(new_server["name"])
                 when "monitor"
@@ -66,8 +68,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define last_server["name"] do |srv|
         last_server["role"].each do |role_config|
            case role_config
-           when "node"
-               nodes.push(last_server["name"])
+           when "db_master"
+               db_masters.push(last_server["name"])
+           when "db_slave"
+               db_slaves.push(last_server["name"])
            when "manager"
                managers.push(last_server["name"])
            when "monitor"
@@ -95,11 +99,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                 
         srv.vm.provision :ansible do |ansible|
             ansible.groups = {
+                "db_masters" => db_masters,
+                "db_slaves" => db_slaves,
                 "managers" => managers,
-                "nodes" => nodes,
                 "monitors" => monitors,
-                "cluster_vms:children" => ["managers", "nodes"],
-                "all_vms:children" => ["cluster_vms", "monitors"]
+                "db_nodes:children" => ["db_masters", "db_slaves"],
+                "db_cluster:children" => ["managers", "db_nodes"],
+                "mng_nodes:children" => ["managers", "monitors"]
             }
             ansible.playbook = ansible_playbook
             ansible.limit = "all"

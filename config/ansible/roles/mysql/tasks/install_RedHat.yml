@@ -1,0 +1,8 @@
+---
+- name: install percona repo on red hat family hosts
+  yum: name={{ item }} state=present
+  with_items: percona_repo
+
+- name: install mysql related packages on red hat family hosts
+  yum: name={{ item }} state=present
+  with_items: mysql_pkgs

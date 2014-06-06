@@ -1,0 +1,12 @@
+---
+percona_repo:
+    - "http://www.percona.com/downloads/percona-release/percona-release-0.0-1.{{ ansible_architecture }}.rpm"
+
+mysql_pkgs:
+    - libselinux-python
+    - Percona-Server-server-{{ percona_server_version|replace(".","") }}
+    - MySQL-python
+    - percona-toolkit
+    - percona-xtrabackup
+
+my_cnf_dir: "/etc/"

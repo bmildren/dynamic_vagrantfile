@@ -1,0 +1,26 @@
+---
+- name: create user
+  mysql_user: name={{ item.name }} host={{ item.host|default("localhost") }} password={{ item.password }} priv={{ item.priv|default("*.*:ALL,GRANT") }} login_unix_socket="{{ mysql_run_dir }}/mysqld.sock"
+  with_items: mysql_users
+
+- name: copy .my.cnf
+  template: src=.my.cnf.j2 dest=~/.my.cnf owner=vagrant group=vagrant mode=0600
+
+- name: remove anonymous users
+  mysql_user: name='' host={{ item }} state=absent login_unix_socket="{{ mysql_run_dir }}/mysqld.sock"
+  with_items:
+      - localhost
+      - "{{ ansible_hostname }}"
+
+- name: remove superfluous root users
+  mysql_user: name=root host={{ item }} state=absent login_unix_socket="{{ mysql_run_dir }}/mysqld.sock"
+  with_items:
+      - 127.0.0.1
+      - ::1
+      - "{{ ansible_hostname }}"
+
+- name: update root password
+  mysql_user: name='root' host='localhost' password={{ mysql_root_pass }} login_unix_socket="{{ mysql_run_dir }}/mysqld.sock"
+
+- name: remove test database
+  mysql_db: name=test state=absent login_unix_socket="{{ mysql_run_dir }}/mysqld.sock"

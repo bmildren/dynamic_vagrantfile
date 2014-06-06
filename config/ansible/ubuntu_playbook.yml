@@ -7,8 +7,7 @@
         changed_when: false
 
 - name: configure database nodes
-  hosts: db_nodes
   sudo: yes
+  hosts: db_nodes
   roles: 
       - mysql
-      - mysql_mha

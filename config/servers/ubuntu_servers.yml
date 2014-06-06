@@ -1,7 +1,7 @@
 ---
 - name: mysql01
   ip: 192.168.50.61
-  box: chef/centos-6.5
+  box: chef/ubuntu-13.10
   box_check_update: no
   provider: virtualbox
   provider_config:

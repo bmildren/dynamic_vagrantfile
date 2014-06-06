@@ -1,0 +1,8 @@
+---
+mha_node_file: mha4mysql-node_0.54-0_all.deb
+mha_manager_file: mha4mysql-manager_0.55-0_all.deb
+mha_download_location: https://mysql-master-ha.googlecode.com/files/
+mha_pkgs:
+  - libconfig-tiny-perl
+  - liblog-dispatch-perl
+  - libparallel-forkmanager-perl

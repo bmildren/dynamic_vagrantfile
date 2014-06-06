@@ -1,13 +1,17 @@
 #!/bin/bash
 
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 1 ]; then
     echo 'USAGE:'
     echo '  vagrantenv <command> <environment> optional: <machine>'
     exit 1
 fi
 
 COMMAND=$1
-ENVIRONMENT=$2
+if [[ $2 ]]; then
+    ENVIRONMENT=$2
+else
+    ENVIRONMENT='default'
+fi
 MACHINE=$3
 
 if [[ ! -s $PWD'/config/servers/'$ENVIRONMENT'_servers.yml' ]]; then
