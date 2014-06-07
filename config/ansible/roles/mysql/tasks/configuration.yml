@@ -34,7 +34,7 @@
 - name: remove innodb log files if incorrect size
   file: path={{ item.item.item }}  state=absent
   with_items: iblogfile_stat.results
-  when: item.stat.size is defined and item.stat.size != "{{ mysql_innodb_logfile_size_mb }} * 1024"
+  when: item.stat.size is defined and item.stat.size != "{{ mysql_innodb_logfile_size_mb }} * (1024 * 1024)"
 
 - name: start mysql
   service: name=mysql state=started enabled=yes

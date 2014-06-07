@@ -6,8 +6,15 @@
         group_by: key=os_{{ ansible_os_family }}
         changed_when: false
 
-- name: configure database nodes
+- name: configure rh hosts
+  hosts: os_RedHat 
   sudo: yes
+  roles:
+      - selinux
+      - epel
+
+- name: configure database nodes
   hosts: db_nodes
+  sudo: yes
   roles: 
       - mysql

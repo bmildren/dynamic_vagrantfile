@@ -1,0 +1,16 @@
+---
+# file: roles/selinux/tasks/main.yml
+
+- name: install selinux packages are installed
+  yum: name={{ item }} state=present
+  register: selinux_install
+  with_items: selinux_pkgs
+  notify:
+    - restart auditd
+
+- name: debug 
+  debug: var=selinux_install
+
+- name: ensure selinux related services are running
+  service: name={{ item }} state=started enabled=yes
+  with_items: selinux_svcs

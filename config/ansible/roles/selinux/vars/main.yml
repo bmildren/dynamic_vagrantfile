@@ -1,0 +1,7 @@
+---
+selinux_pkgs: 
+  - setroubleshoot-server
+
+selinux_svcs:
+  - messagebus
+  - auditd
