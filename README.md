@@ -3,7 +3,7 @@ vagrant_wrapper
 
 Wrapper around vagrant and ansible.
 
-By default it's configured to use virtual box, discover ready-made boxes here: https://vagrantcloud.com/discover/featured.
+By default it's configured to use virtual box, ready-made boxes can be referenced in the config and automatically pulled using vagrant from here: https://vagrantcloud.com/discover/featured.
 
 To use run:
 vagrant_wrapper <command> <environment> optional: <machine>
