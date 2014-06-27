@@ -14,10 +14,10 @@ The environment is user definable but vagrant_wrapper will expect two configurat
 
 Available commands:
 
-start (vagrant up)
-connect (vagrant ssh)
-status (vagrant status)
-refresh (vagrant provision)
-reload (vagrant reload)
-stop (vagrant halt)
+start (vagrant up),
+connect (vagrant ssh),
+status (vagrant status),
+refresh (vagrant provision),
+reload (vagrant reload),
+stop (vagrant halt),
 destroy (vagrant destroy --force)
