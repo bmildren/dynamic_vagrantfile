@@ -1,4 +1,0 @@
-- include: install.yml
-- include: configuration.yml
-- include: secure_installation.yml
-  when: mysql_install == 'master'

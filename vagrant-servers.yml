@@ -1,0 +1,41 @@
+---
+- name: mysql1
+  box: ubuntu/trusty64
+  box_check_update: no
+  provider: virtualbox
+  provider_config:
+    --memory: 384
+    --cpuexecutioncap: 50
+  role:
+    - mysql_master
+
+- name: mysql2
+  box: ubuntu/trusty64
+  box_check_update: no
+  provider: virtualbox
+  provider_config:
+    --memory: 384
+    --cpuexecutioncap: 50
+  role:
+    - mysql_slave
+    - mysql_backup
+
+- name: mysql3
+  box: ubuntu/trusty64
+  box_check_update: no
+  provider: virtualbox
+  provider_config:
+    --memory: 384
+    --cpuexecutioncap: 50
+  role:
+    - mysql_manager
+
+- name: app1
+  box: ubuntu/trusty64
+  box_check_update: no
+  provider: virtualbox
+  provider_config:
+    --memory: 384
+    --cpuexecutioncap: 50
+  role:
+    - mysql_proxy

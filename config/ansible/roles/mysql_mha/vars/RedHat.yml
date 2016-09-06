@@ -1,9 +1,0 @@
----
-mha_node_file: mha4mysql-node-0.56-0.el6.noarch
-mha_manager_file: mha4mysql-manager-0.56-0.el6.noarch
-mha_download_location: https://googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/
-mha_pkgs:
-    - perl-DBD-MySQL
-    - perl-Config-Tiny
-    - perl-Log-Dispatch
-    - perl-Parallel-ForkManager
